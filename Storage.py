@@ -2,15 +2,15 @@
 # -*- coding: UTF-8 -*-
 """
 @Project ：main.py 
-@File    ：storage.py
+@File    ：Storage.py
 @IDE     ：PyCharm 
 @Author  ：DeamLake
 @Date    ：2023/1/2 22:25 
 """
 
 import os
-from user import User
-from message import Message
+from User import User
+from Message import Message
 
 
 def loadFromFile():
@@ -44,17 +44,17 @@ def loadFromFile():
     Message.messageList.sort(key=lambda msg: len(msg.usersLike), reverse=True)
 
 
-def saveToFile(mid_inc, message_list, user_list):
+def saveToFile(midInc, messageList, userList):
     with open("messageBoardDataTmp.txt", "w", encoding="utf-8") as f:
         f.write("# message ID inc\n")
-        f.write("{}\n".format(mid_inc))
+        f.write("{}\n".format(midInc))
         f.write("# user list\n")
-        f.write("{}\n".format(len(user_list)))
-        for item in user_list:
+        f.write("{}\n".format(len(userList)))
+        for item in userList:
             f.write("{} {} {}\n".format(item.userID, item.password, item.name))
         f.write("# message list\n")
-        f.write("{}\n".format(len(message_list)))
-        for item in message_list:
+        f.write("{}\n".format(len(messageList)))
+        for item in messageList:
             f.write("{} {}\n".format(item.messageID, item.userID))
             for ul in item.usersLike:
                 f.write("{} ".format(ul))

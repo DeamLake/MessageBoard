@@ -6,10 +6,7 @@
 3 3 3
 deam 123 deamlake
 # message list
-13
-2 1
-3 
-fuck
+12
 4 deam
 deam 
 test

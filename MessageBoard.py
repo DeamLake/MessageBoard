@@ -2,21 +2,21 @@
 # -*- coding: UTF-8 -*-
 """
 @Project ：main.py 
-@File    ：message_board.py
+@File    ：MessageBoard.py
 @IDE     ：PyCharm 
 @Author  ：DeamLake
 @Date    ：2023/1/2 22:23 
 """
 
-from user import User
-from message import Message
-import storage
+from User import User
+from Message import Message
+import Storage
 
 
 class MessageBoard(object):
     def __init__(self):
-        self.__currentUser = None
-        storage.loadFromFile()
+        self._currentUser = None
+        Storage.loadFromFile()
         pass
 
     def run(self):
@@ -48,7 +48,7 @@ class MessageBoard(object):
             elif msg[0].lower() != " ":
                 print("Unsupported operation.")
 
-        storage.saveToFile(Message.messageIDAutoInc, Message.messageList, User.userList.values())
+        Storage.saveToFile(Message.messageIDAutoInc, Message.messageList, User.userList.values())
         pass
 
     def _doLogIn(self, msg):
@@ -56,8 +56,8 @@ class MessageBoard(object):
             print("The operation length is wrong!")
             return
 
-        if self.__currentUser is not None:
-            print("User {} is online, Please logoff first!".format(self.__currentUser.name))
+        if self._currentUser is not None:
+            print("User {} is online, Please logoff first!".format(self._currentUser.name))
             return
 
         code_ret, user_ret = User.checkLogIn(msg[1], msg[2])
@@ -66,7 +66,7 @@ class MessageBoard(object):
         elif code_ret == User.UserCheckEnum.PASSWORD_WRONG:
             print("Wrong password!")
         else:
-            self.__currentUser = user_ret
+            self._currentUser = user_ret
             print("User {} login!".format(user_ret.name))
         pass
 
@@ -75,8 +75,8 @@ class MessageBoard(object):
             print("The operation length is wrong!")
             return
 
-        if self.__currentUser is not None:
-            print("User {} is online, Please logoff first!".format(self.__currentUser.name))
+        if self._currentUser is not None:
+            print("User {} is online, Please logoff first!".format(self._currentUser.name))
             return
 
         code_ret, user_ret = User.checkLogOn(msg[1], msg[2], msg[3])
@@ -85,7 +85,7 @@ class MessageBoard(object):
         elif code_ret == User.UserCheckEnum.NAME_EXIST:
             print("Name {} exist!".format(msg[3]))
         else:
-            self.__currentUser = user_ret
+            self._currentUser = user_ret
             print("New user {} login!".format(msg[3]))
         pass
 
@@ -94,8 +94,8 @@ class MessageBoard(object):
             print("The operation length is wrong!")
             return
 
-        print("User {} logoff!".format(self.__currentUser.name))
-        self.__currentUser = None
+        print("User {} logoff!".format(self._currentUser.name))
+        self._currentUser = None
         pass
 
     def _doList(self, msg):
@@ -122,12 +122,12 @@ class MessageBoard(object):
         for item in message_list:
             print("{:<{}} ".format(item.messageID, 12), end="")
 
-            if self.__currentUser is not None and self.__currentUser.userID == item.userID:
+            if self._currentUser is not None and self._currentUser.userID == item.userID:
                 print("{:^{}} ".format("you", 20), end="")
             else:
                 print("{:^{}} ".format(item.userID, 20), end="")
 
-            if self.__currentUser is not None and self.__currentUser.userID in item.usersLike:
+            if self._currentUser is not None and self._currentUser.userID in item.usersLike:
                 print("{:^{}} ".format("✔", 12), end="")
             else:
                 print("{:^{}} ".format(" ", 12), end="")
@@ -137,13 +137,13 @@ class MessageBoard(object):
         pass
 
     def _doAddMsg(self, msg):
-        if self.__currentUser is None:
+        if self._currentUser is None:
             print("Before you add message, You should login first!")
             return
 
         new_mid = Message.getNextID()
-        new_message = Message(new_mid, self.__currentUser.userID, ' '.join(msg[1:]))
-        Message.updateMessage(new_message, Message.MessageOptEnum.ADD_MSG, self.__currentUser.userID)
+        new_message = Message(new_mid, self._currentUser.userID, ' '.join(msg[1:]))
+        Message.updateMessage(new_message, Message.MessageOptEnum.ADD_MSG, self._currentUser.userID)
         pass
 
     def _doDelMsg(self, msg):
@@ -151,7 +151,7 @@ class MessageBoard(object):
             print("The operation length is wrong!")
             return
 
-        if self.__currentUser is None:
+        if self._currentUser is None:
             print("Before you del message, You should login first!")
             return
 
@@ -161,11 +161,11 @@ class MessageBoard(object):
             print("Message {} does not Exist!".format(msg[1]))
             return
 
-        if self.__currentUser.userID != message.userID:
+        if self._currentUser.userID != message.userID:
             print("It's not your message!")
             return
 
-        Message.updateMessage(message, Message.MessageOptEnum.DEL_MSG, self.__currentUser.userID)
+        Message.updateMessage(message, Message.MessageOptEnum.DEL_MSG, self._currentUser.userID)
         pass
 
     def _doLikeMsg(self, msg):
@@ -173,7 +173,7 @@ class MessageBoard(object):
             print("The operation length is wrong!")
             return
 
-        if self.__currentUser is None:
+        if self._currentUser is None:
             print("Before you like message, You should login first!")
             return
 
@@ -183,7 +183,7 @@ class MessageBoard(object):
             print("Message {} does not Exist!".format(msg[1]))
             return
 
-        Message.updateMessage(message, Message.MessageOptEnum.LIKE_MSG, self.__currentUser.userID)
+        Message.updateMessage(message, Message.MessageOptEnum.LIKE_MSG, self._currentUser.userID)
         pass
 
     def _doUnLikeMsg(self, msg):
@@ -191,7 +191,7 @@ class MessageBoard(object):
             print("The operation length is wrong!")
             return
 
-        if self.__currentUser is None:
+        if self._currentUser is None:
             print("Before you unlike message, You should login first!")
             return
 
@@ -201,7 +201,7 @@ class MessageBoard(object):
             print("Message {} does not Exist!".format(msg[1]))
             return
 
-        Message.updateMessage(message, Message.MessageOptEnum.UNLIKE_MSG, self.__currentUser.userID)
+        Message.updateMessage(message, Message.MessageOptEnum.UNLIKE_MSG, self._currentUser.userID)
         pass
 
     @staticmethod
